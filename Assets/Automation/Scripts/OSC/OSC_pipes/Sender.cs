@@ -22,7 +22,22 @@ namespace OSC
                 handler.Send(oscM);
             }
         }
-        
+        public void Send<T>(string address, T[] message)
+        {
+            if (!values.ContainsKey(address) || values[address] != message)
+            {
+                values[address] = message;
+
+                OscMessage oscM = new OscMessage();
+                oscM.Address = address;
+                oscM.Values = new ArrayList();
+                foreach (object o in message)
+                {
+                    oscM.Values.Add(o);
+                }
+                handler.Send(oscM);
+            }
+        }
         // Start is called just before any of the Update methods is called the first time.
         protected override void InitCommunicator()
         {

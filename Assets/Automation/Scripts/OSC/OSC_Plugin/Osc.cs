@@ -29,7 +29,7 @@ public class Osc : MonoBehaviour
     private bool ReaderRunning;
     private OscMessageHandler AllMessageHandler;
     Hashtable AddressTable;
-
+    int packetSize = 1000;
 
     void Start()
     {
@@ -83,7 +83,7 @@ public class Osc : MonoBehaviour
         {
             while (ReaderRunning)
             {
-                byte[] buffer = new byte[1000];
+                byte[] buffer = new byte[packetSize];
                 int length = OscPacketIO.ReceivePacket(buffer);
                 string s = "";
                 for (int i = 0; i < length; ++i)
@@ -138,8 +138,8 @@ public class Osc : MonoBehaviour
     // serializes it into a byte[] suitable for sending to the PacketIO.
     public void Send(OscMessage oscMessage)
     {
-        byte[] packet = new byte[1000];
-        int length = Osc.OscMessageToPacket(oscMessage, packet, 1000);
+        byte[] packet = new byte[packetSize];
+        int length = Osc.OscMessageToPacket(oscMessage, packet, packetSize);
         OscPacketIO.SendPacket(packet, length);
     }
 
@@ -150,8 +150,8 @@ public class Osc : MonoBehaviour
     //oms - The OSC Message to send.
     public void Send(ArrayList oms)
     {
-        byte[] packet = new byte[1000];
-        int length = Osc.OscMessagesToPacket(oms, packet, 1000);
+        byte[] packet = new byte[packetSize];
+        int length = Osc.OscMessagesToPacket(oms, packet, packetSize);
         OscPacketIO.SendPacket(packet, length);
     }
 

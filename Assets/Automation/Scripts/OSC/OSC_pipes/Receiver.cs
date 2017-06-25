@@ -24,11 +24,28 @@ namespace OSC
             if (oscMessage.Values != null && oscMessage.Values.Count > 0)
             {
                 msgValue = oscMessage.Values[0]; //the message value
+                if (oscMessage.Values.Count == 1)
+                {
+                    values[msgAddress] = msgValue == null ? 0 : msgValue;
+                    //Debug.Log("-> obj[" + msgAddress + "]=" + msgValue);
+                }
+                else
+                {
+                    //Array message
+                    object[] array = new object[oscMessage.Values.Count];
+                    for (int m = 0; m < array.Length; ++m) {
+                        array[m] = oscMessage.Values[m];
+                    }
+                    values[msgAddress] = array;
+                    //Debug.Log("-> array[" + msgAddress + "]=" + array.Length);
+                }
+            }
+            else
+            {
+                //Empty message
             }
             //var msgString = Osc.OscMessageToString(oscMessage); //the message and value combined
             //Debug.Log(msgString); //log the message and values coming from OSC
-
-            values[msgAddress] = msgValue == null ? 0 : msgValue;
         }
 
         public void AddChannel(string _address, object defaultValue)
