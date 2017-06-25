@@ -7,9 +7,9 @@ using System.Threading;
 using UnityEngine;
 
 
-  // UdpPacket provides packetIO over UDP
-  public class UDPPacketIO : MonoBehaviour
-  {
+// UdpPacket provides packetIO over UDP
+public class UDPPacketIO : MonoBehaviour
+{
     private UdpClient Sender;
     private UdpClient Receiver;
     private bool socketsOpen;
@@ -22,13 +22,14 @@ using UnityEngine;
         //do nothing. init must be called
     }
 
-  	public void init(string hostIP, int remotePort, int localPort){
+    public void init(string hostIP, int remotePort, int localPort)
+    {
         RemoteHostName = hostIP;
         RemotePort = remotePort;
         LocalPort = localPort;
         socketsOpen = false;
         Open();
-  	}
+    }
 
 
     ~UDPPacketIO()
@@ -51,12 +52,12 @@ using UnityEngine;
             //Debug.Log("opening udpclient listener on port " + localPort);
 
             IPEndPoint listenerIp = new IPEndPoint(IPAddress.Any, localPort);
-            Receiver = new UdpClient(listenerIp);           
+            Receiver = new UdpClient(listenerIp);
             success = true;
         }
         catch (Exception e)
         {
-            Debug.LogWarning("cannot open udp client interface at port "+localPort);
+            Debug.LogWarning("cannot open udp client interface at port " + localPort);
             Debug.LogWarning(e);
         }
 
@@ -69,7 +70,7 @@ using UnityEngine;
     // Close the socket currently listening, and destroy the UDP sender device.
     public void Close()
     {
-        if(Sender != null)
+        if (Sender != null)
             Sender.Close();
 
         if (Receiver != null)
@@ -91,7 +92,7 @@ using UnityEngine;
     // returns - True if open, false if closed.
     public bool IsOpen()
     {
-      return socketsOpen;
+        return socketsOpen;
     }
 
     // Send a packet of bytes out via UDP.
@@ -113,56 +114,59 @@ using UnityEngine;
 
     // buffer - The buffer to be read into.
     // returns - The number of bytes read, or 0 on failure
-    public int ReceivePacket(byte[] buffer)
+    public int ReceivePacket(out byte[] buffer, int maxSize)
     {
         if (!IsOpen())
             Open();
         if (!IsOpen())
+        {
+            buffer = new byte[0];
             return 0;
-
-      IPEndPoint iep = new IPEndPoint(IPAddress.Any, localPort);
-      byte[] incoming = Receiver.Receive( ref iep );
-      int count = Math.Min(buffer.Length, incoming.Length);
-      System.Array.Copy(incoming, buffer, count);
-      return count;
+        }
+        IPEndPoint iep = new IPEndPoint(IPAddress.Any, localPort);
+        byte[] incoming = Receiver.Receive(ref iep);
+        int count = Math.Min(maxSize, incoming.Length);
+        buffer = new byte[count];
+        System.Array.Copy(incoming, buffer, count);
+        return count;
     }
 
     // The address of the board that you're sending to.
     public string RemoteHostName
     {
-      get
-      {
-        return remoteHostName;
-      }
-      set
-      {
-        remoteHostName = value;
-      }
+        get
+        {
+            return remoteHostName;
+        }
+        set
+        {
+            remoteHostName = value;
+        }
     }
 
     // The remote port that you're sending to.
     public int RemotePort
     {
-      get
-      {
-        return remotePort;
-      }
-      set
-      {
-        remotePort = value;
-      }
+        get
+        {
+            return remotePort;
+        }
+        set
+        {
+            remotePort = value;
+        }
     }
 
     // The local port you're listening on.
     public int LocalPort
     {
-      get
-      {
-        return localPort;
-      }
-      set
-      {
-        localPort = value;
-      }
+        get
+        {
+            return localPort;
+        }
+        set
+        {
+            localPort = value;
+        }
     }
 }

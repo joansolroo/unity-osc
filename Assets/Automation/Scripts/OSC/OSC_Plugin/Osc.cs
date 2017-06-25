@@ -29,7 +29,7 @@ public class Osc : MonoBehaviour
     private bool ReaderRunning;
     private OscMessageHandler AllMessageHandler;
     Hashtable AddressTable;
-    int packetSize = 1000;
+    int packetSize = 1024*128;
 
     void Start()
     {
@@ -83,8 +83,8 @@ public class Osc : MonoBehaviour
         {
             while (ReaderRunning)
             {
-                byte[] buffer = new byte[packetSize];
-                int length = OscPacketIO.ReceivePacket(buffer);
+                byte[] buffer;
+                int length = OscPacketIO.ReceivePacket(out buffer, packetSize);
                 string s = "";
                 for (int i = 0; i < length; ++i)
                 {
